@@ -28,7 +28,7 @@ fn test_extract_code_blocks() {
     assert!(result.status.success(), "Program did not run successfully");
 
     // Check that the output directory contains the expected files
-    let rust_file = Path::new(&output_dir).join("rust/example.rs");
+    let rust_file = Path::new(&output_dir).join("example.rs");
     assert!(
         rust_file.exists(),
         "Expected Rust file {:?} was not created",
@@ -61,7 +61,7 @@ fn test_tangled_mode() {
     assert!(result.status.success(), "Program did not run successfully");
 
     // Check that only the `:tangle` file was created
-    let tangled_file = Path::new(&output_dir).join("xpto/something.rs");
+    let tangled_file = Path::new(&output_dir).join("example.rs");
     assert!(
         tangled_file.exists(),
         "Expected tangled file {:?} was not created",

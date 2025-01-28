@@ -1,7 +1,8 @@
 use clap::Parser;
 use std::collections::HashMap;
 use std::path::PathBuf;
-use pulldown_cmark::{CodeBlockKind, Event, Parser};
+use pulldown_cmark::{CodeBlockKind, Event};
+use pulldown_cmark::Parser as MDParser;
 use std::fs;
 use std::io::{self, Read};
 
@@ -30,7 +31,7 @@ pub fn extract_code_blocks(file_path: &std::path::Path) -> io::Result<Vec<CodeBl
     let mut file_content = String::new();
     fs::File::open(file_path)?.read_to_string(&mut file_content)?;
 
-    let parser = Parser::new(&file_content);
+    let parser = MDParser::new(&file_content);
     let mut blocks = Vec::new();
     let mut current_block = None;
 

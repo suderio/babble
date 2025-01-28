@@ -28,7 +28,8 @@ pub fn write_code_blocks(blocks: &[CodeBlock], config: &Config, source_file: &Pa
                 config.output_dir.join(tangle_path)
             } else {
                 let extensions = config.language_extensions();
-                let extension = extensions.get(lang).unwrap_or(&"txt".to_string());
+                let txt = "txt".to_string();
+                let extension = extensions.get(lang).unwrap_or(&txt);
                 config.output_dir.join(lang).join(format!("{}.{}", file_stem, extension))
             };
 

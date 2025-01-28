@@ -1,5 +1,6 @@
 use clap::Parser;
 use std::path::PathBuf;
+use std::collections::HashMap;
 
 /// Configuration for the Markdown code extractor.
 #[derive(Parser, Debug)]

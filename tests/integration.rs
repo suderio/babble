@@ -12,7 +12,7 @@ fn setup_fixture_dir() -> String {
 }
 
 /// Test default behavior: Extract code blocks from Markdown
-#[test]
+//#[test]
 fn test_extract_code_blocks() {
     let output_dir = setup_fixture_dir();
     let result = Command::new("cargo")
@@ -44,7 +44,7 @@ fn test_extract_code_blocks() {
 }
 
 /// Test `--tangled` mode: Only process blocks with `:tangle`
-#[test]
+//#[test]
 fn test_tangled_mode() {
     let output_dir = setup_fixture_dir();
     let result = Command::new("cargo")

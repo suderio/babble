@@ -1,129 +1,244 @@
-# md-babble
+# markdown-babble
 
-**md-babble** is a command-line tool inspired by the functionality of Emacs' `org-babel`. It processes Markdown files, extracts code blocks, and generates source files for each block based on its specified language.
+**markdown-babble** is a command-line tool inspired by the functionality of Emacs' `org-babel`. It processes Markdown files, extracts code blocks, and generates source files for each block based on its specified language.
+
+It is a versatile and efficient command-line tool that allows you to process Markdown and source code files. It provides two primary modes of operation:
+
+1. Tangle Mode: Extracts code blocks from Markdown files and saves them as separate source code files.
+
+
+2. Untangle Mode: Converts source code files into Markdown files with appropriate fenced code blocks.
+
+
+
+This tool is perfect for developers, technical writers, and researchers who need a seamless way to manage Markdown files containing code snippets or document their source code effectively.
+
+
+---
 
 ## Features
 
-- Extracts code blocks from Markdown files and saves them as individual files.
-- Supports multiple languages with proper file extensions (e.g., `.rs` for Rust, `.py` for Python).
-- Handles nested headers (`#`, `##`, ... `######`) to name files appropriately.
-- Allows appending multiple code blocks to the same file if they belong to the same title and language.
-- Provides command-line options for:
-  - Verbose logging.
-  - Dry-run execution (simulate without generating files).
-  - Custom output directory.
-- Gracefully handles missing output directories by prompting the user to create them.
+### General Features:
+
+Process Markdown files with code blocks in various programming languages.
+
+Supports over 40 programming languages with default file extensions.
+
+Glob support: Specify multiple files or directories using patterns like src/**/*.md.
+
+Customizable file extensions: Override defaults for specific languages using --extension.
+
+Handles :tangle directives to define custom target file paths for code blocks.
+
+
+### Modes:
+
+1. Tangle Mode (Default):
+
+Extracts code blocks from Markdown files into individual source files.
+
+Supports :tangle <filename> to customize the target filename and location.
+
+
+
+2. Untangle Mode (--untangle):
+
+Converts source code files into Markdown files with correctly formatted fenced code blocks.
+
+Maintains directory structure and filenames.
+
+
+
+
+### Additional Features:
+
+Dry-Run Mode (--dry-run): Simulate the process without creating or modifying any files.
+
+Verbose Logging (--verbose): Provides detailed information about the operations being performed.
+
+Selective Processing (--tangled): Only process code blocks with the :tangle directive.
+
+
+---
 
 ## Installation
 
-You can install **md-babble** using [Cargo](https://doc.rust-lang.org/cargo/):
+### Prerequisites
 
-```bash
-cargo install md-babble
-```
+Rust and Cargo installed on your system. Install them via Rustup:
 
-Alternatively, clone this repository and build it locally:
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
-```bash
-git clone https://github.com/your-username/md-babble.git
-cd md-babble
+
+### Build
+
+Clone the repository and build the project:
+
+git clone https://github.com/your-username/markdown-code-extractor.git
+cd markdown-code-extractor
 cargo build --release
-```
 
-The executable will be available in `./target/release/md-babble`.
+The binary will be available at target/release/markdown-code-extractor.
+
+
+---
 
 ## Usage
 
-To process a Markdown file:
+Syntax
 
-```bash
-md-babble <file> [OPTIONS]
-```
+markdown-babble [FLAGS] --input-glob <GLOB_PATTERN> [OPTIONS]
 
-### Options
+Command-Line Arguments
 
-- `-v`, `--verbose`  
-  Increase logging verbosity.
 
-- `-d`, `--dry-run`  
-  Simulate execution without generating files.
+---
 
-- `-o`, `--output-dir <DIR>`  
-  Specify the output directory for generated files (default: `./output`).
+## Examples
 
-### Example
+1. Extract Code Blocks (Tangle Mode)
 
-Given a Markdown file `example.md`:
+Extract all code blocks from Markdown files in the docs directory:
 
-```markdown
-# MyProject
+markdown-babble --input-glob "docs/**/*.md" --output-dir "./output"
 
-## Main
-```rust
+2. Process Only Tangled Blocks
+
+Only process blocks with the :tangle directive:
+
+markdown-babble --input-glob "docs/**/*.md" --tangled
+
+3. Convert Source Code to Markdown (Untangle Mode)
+
+Convert Rust source code files into Markdown:
+
+markdown-babble --input-glob "src/**/*.rs" --output-dir "./docs" --untangle
+
+4. Dry Run
+
+Simulate extracting code blocks without creating any files:
+
+markdown-babble --input-glob "docs/**/*.md" --dry-run
+
+5. Customize Extensions
+
+Set a custom extension for Rust files:
+
+markdown-babble --input-glob "docs/**/*.md" --extension rust=rustfile
+
+
+---
+
+## Markdown File Example
+
+Input (example.md):
+
+```rust :tangle src/hello.rs
 fn main() {
-    println!("Hello, md-babble!");
-}
-    ```
+    println!("Hello, world!");
+    }
+```
 
 ```python
-print("Hello, md-babble!")
-    ```
+    print("Hello, Python!")
 ```
 
-Run the following command:
-
-```bash
-md-babble example.md -v -o ./generated
+    ### Output Directory (`output/`):
+```plaintext
+    output/
+    ├── rust/
+    │   └── example.rs
+    ├── python/
+    │   └── example.py
+    └── src/
+        └── hello.rs
 ```
 
-Generated files:
+---
 
-- `generated/Main.rs`
-- `generated/Main.py`
+## Development
+
+### Running Tests
+
+The project includes a comprehensive set of integration tests. To run the tests:
+
+cargo test
+
+Example Test Case
+
+Input Markdown:
+
+```rust :tangle src/example.rs
+        fn main() {
+            println!("Hello, world!");
+            }
+```
+
+- Expected Output:
+```plaintext
+            output/
+            └── src/
+                └── example.rs
+```
+
+---
 
 ## Supported Languages
 
-md-babble supports 30+ languages, including:
+The tool supports over 40 languages, including:
 
-- Rust (`.rs`)
-- Python (`.py`)
-- JavaScript (`.js`)
-- TypeScript (`.ts`)
-- Java (`.java`)
-- C (`.c`), C++ (`.cpp`)
-- Go (`.go`)
-- Ruby (`.rb`)
-- PHP (`.php`)
-- Swift (`.swift`)
-- Kotlin (`.kt`)
-- Shell (`.sh`)
+                Rust (.rs)
 
-If a language is not recognized, md-babble will use the language name as the file extension and issue a warning.
+                Python (.py)
 
+                JavaScript (.js)
+
+                TypeScript (.ts)
+
+                Java (.java)
+
+                C (.c)
+
+                C++ (.cpp)
+
+                Go (.go)
+
+                Ruby (.rb)
+
+                PHP (.php)
+
+                HTML (.html)
+
+                CSS (.css)
+
+
+You can override these defaults with the --extension flag.
+
+
+---
+
+## Contributing
+
+Contributions are welcome! To contribute:
+
+1. Fork the repository.
+
+2. Create a feature branch.
+
+3. Submit a pull request with your changes.
+
+For bugs or feature requests, please open an issue on GitHub.
+    
 ## Future Features
 
-- **Org-mode support:** Extend functionality to process `.org` files directly.
 - **Code block execution:** Evaluate code blocks in supported languages, similar to `org-babel`.
 - **Configuration files:** Allow users to define custom file extensions and behaviors.
 - **Inline error handling:** More informative error messages with suggestions.
 
-## Contributing
-
-Contributions are welcome! Here’s how you can help:
-
-1. Fork the repository.
-2. Create a feature branch (`git checkout -b feature/your-feature`).
-3. Commit your changes (`git commit -m 'Add your feature'`).
-4. Push to the branch (`git push origin feature/your-feature`).
-5. Open a pull request.
-
-Please ensure your code follows Rust idioms and includes tests where appropriate.
-
 ## License
 
-md-babble is licensed under the [MIT License](LICENSE).
+markdown-babble is licensed under the [MIT License](LICENSE).
 
 ## Acknowledgments
 
 - Inspired by Emacs' `org-babel` and the power of literate programming.
-- Built with ❤️ in Rust.

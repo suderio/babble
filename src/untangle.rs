@@ -35,10 +35,10 @@ pub fn untangle_file(input_file: &Path, output_dir: &Path, dry_run: bool) -> io:
     }
 
     // Write the Markdown content
-    let mut output_file = fs::File::create(markdown_path)?;
-    writeln!(output_file, "```{}", language)?;
-    output_file.write_all(file_content.as_bytes())?;
-    writeln!(output_file, "```")?;
+    let mut output_file = fs::File::create(&markdown_path)?; // Borrow `markdown_path` here
+    writeln!(output_file, "```{}", language)?; // Start the code block
+    output_file.write_all(file_content.as_bytes())?; // Write the file content
+    writeln!(output_file, "```")?; // End the code block
 
     info!("Created Markdown file: {:?}", markdown_path);
 

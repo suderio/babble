@@ -36,6 +36,9 @@ pub struct Config {
 }
 
 impl Config {
+    pub fn from_args_or_exit() -> Self {
+        Config::parse()
+    }
     /// Returns the language-to-extension mapping, including defaults and user overrides.
     pub fn language_extensions(&self) -> HashMap<String, String> {
         let mut extensions = Self::default_extensions();

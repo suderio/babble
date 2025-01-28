@@ -1,6 +1,71 @@
 use clap::Parser;
 use std::collections::HashMap;
 use std::path::PathBuf;
+use pulldown_cmark::{CodeBlockKind, Event, Parser};
+use std::fs;
+use std::io::{self, Read};
+
+/// Represents a code block extracted from Markdown.
+#[derive(Debug)]
+pub struct CodeBlock {
+    /// Language of the code block (e.g., "rust", "python").
+    pub language: Option<String>,
+    /// Content of the code block.
+    pub content: String,
+    /// Optional target file path specified by `:tangle`.
+    pub tangle_path: Option<String>,
+}
+
+/// Extract code blocks from a Markdown file.
+///
+/// This function parses a Markdown file, identifies fenced code blocks,
+/// and extracts their language, content, and optional `:tangle` path.
+///
+/// # Arguments
+/// - `file_path`: Path to the Markdown file to process.
+///
+/// # Returns
+/// A vector of `CodeBlock` structs containing the parsed code blocks.
+pub fn extract_code_blocks(file_path: &std::path::Path) -> io::Result<Vec<CodeBlock>> {
+    let mut file_content = String::new();
+    fs::File::open(file_path)?.read_to_string(&mut file_content)?;
+
+    let parser = Parser::new(&file_content);
+    let mut blocks = Vec::new();
+    let mut current_block = None;
+
+    for event in parser {
+        match event {
+            Event::Start(pulldown_cmark::Tag::CodeBlock(CodeBlockKind::Fenced(info))) => {
+                let parts: Vec<&str> = info.split_whitespace().collect();
+                let language = parts.get(0).map(|s| s.to_string());
+                let tangle_path = parts
+                    .iter()
+                    .find(|&&part| part.starts_with(":tangle"))
+                    .and_then(|t| t.strip_prefix(":tangle").map(|s| s.trim().to_string()));
+
+                current_block = Some(CodeBlock {
+                    language,
+                    content: String::new(),
+                    tangle_path,
+                });
+            }
+            Event::Text(text) => {
+                if let Some(block) = current_block.as_mut() {
+                    block.content.push_str(&text);
+                }
+            }
+            Event::End(pulldown_cmark::Tag::CodeBlock(_)) => {
+                if let Some(block) = current_block.take() {
+                    blocks.push(block);
+                }
+            }
+            _ => {}
+        }
+    }
+
+    Ok(blocks)
+}
 
 /// Configuration for the Markdown code extractor.
 #[derive(Parser, Debug)]

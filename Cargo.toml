@@ -1,11 +1,14 @@
 [package]
-name = "md_babble"
+name = "markdown_babble"
 version = "0.1.0"
 edition = "2021"
 authors = ["Paulo Suderio <paulo.suderio@gmail.com>"]
 description = "A tool to extract or convert code blocks between Markdown and source code files."
 license = "MIT"
-repository = "https://github.com/suderio/md_babble"
+repository = "https://github.com/suderio/markdown_babble"
+
+[[bin]]
+name = "markdown-babble"
 
 [dependencies]
 clap = { version = "4.1", features = ["derive"] }

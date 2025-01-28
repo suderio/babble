@@ -9,6 +9,7 @@ repository = "https://github.com/suderio/markdown_babble"
 
 [[bin]]
 name = "markdown-babble"
+path = "src/main.rs"
 
 [dependencies]
 clap = { version = "4.1", features = ["derive"] }

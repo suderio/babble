@@ -19,19 +19,19 @@ pub struct Config {
     pub verbose: bool,
 
     /// Perform a dry run (no changes to the file system)
-    #[arg(long)]
+    #[arg(short, long)]
     pub dry_run: bool,
 
     /// Only process blocks with :tangle
-    #[arg(long)]
+    #[arg(short, long)]
     pub tangled: bool,
 
     /// Untangle mode: convert source code files to Markdown
-    #[arg(long)]
+    #[arg(short, long)]
     pub untangle: bool,
 
     /// Language-to-extension mapping (e.g., rust=rs). Can be specified multiple times.
-    #[arg(long)]
+    #[arg(short, long)]
     pub extension: Vec<String>,
 }
 

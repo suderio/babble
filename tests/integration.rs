@@ -12,7 +12,7 @@ fn setup_fixture_dir() -> String {
 }
 
 /// Test default behavior: Extract code blocks from Markdown
-//#[test]
+#[test]
 fn test_extract_code_blocks() {
     let output_dir = setup_fixture_dir();
     let result = Command::new("cargo")
@@ -22,20 +22,21 @@ fn test_extract_code_blocks() {
         .arg("tests/fixtures/example.md")
         .arg("--output-dir")
         .arg(&output_dir)
+        .arg("--verbose")
         .output()
         .expect("Failed to run the program");
 
     assert!(result.status.success(), "Program did not run successfully");
 
     // Check that the output directory contains the expected files
-    let rust_file = Path::new(&output_dir).join("example.rs");
+    let rust_file = Path::new(&output_dir).join("xpto/something.rs");
     assert!(
         rust_file.exists(),
         "Expected Rust file {:?} was not created",
         rust_file
     );
 
-    let python_file = Path::new(&output_dir).join("python/example.py");
+    let python_file = Path::new(&output_dir).join("example.py");
     assert!(
         python_file.exists(),
         "Expected Python file {:?} was not created",
@@ -44,7 +45,7 @@ fn test_extract_code_blocks() {
 }
 
 /// Test `--tangled` mode: Only process blocks with `:tangle`
-//#[test]
+#[test]
 fn test_tangled_mode() {
     let output_dir = setup_fixture_dir();
     let result = Command::new("cargo")
@@ -61,7 +62,7 @@ fn test_tangled_mode() {
     assert!(result.status.success(), "Program did not run successfully");
 
     // Check that only the `:tangle` file was created
-    let tangled_file = Path::new(&output_dir).join("example.rs");
+    let tangled_file = Path::new(&output_dir).join("xpto/something.rs");
     assert!(
         tangled_file.exists(),
         "Expected tangled file {:?} was not created",
@@ -69,7 +70,7 @@ fn test_tangled_mode() {
     );
 
     // Ensure other files (non-`:tangle`) were not created
-    let rust_file = Path::new(&output_dir).join("rust/example.rs");
+    let rust_file = Path::new(&output_dir).join("example.rs");
     assert!(
         !rust_file.exists(),
         "Unexpected Rust file {:?} was created in `--tangled` mode",
@@ -128,7 +129,7 @@ fn test_dry_run_mode() {
     assert!(result.status.success(), "Program did not run successfully");
 
     // Ensure no files were created
-    let rust_file = Path::new(&output_dir).join("rust/example.rs");
+    let rust_file = Path::new(&output_dir).join("example.rs");
     assert!(
         !rust_file.exists(),
         "Rust file {:?} was unexpectedly created in dry-run mode",

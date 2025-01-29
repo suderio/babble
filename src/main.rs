@@ -42,6 +42,7 @@ fn main() {
             }
         }
     } else {
+        info!("Processing glob: {:?}", &config.input_glob);
         // Default behavior: Extract code blocks from Markdown
         match glob(&config.input_glob) {
             Ok(paths) => {

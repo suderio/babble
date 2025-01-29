@@ -12,6 +12,8 @@ pub fn write_code_blocks(blocks: &[CodeBlock], config: &Config, source_file: &Pa
         .and_then(|s| s.to_str())
         .unwrap_or("unknown");
 
+    let extensions = config.language_extensions(); // Retrieve language-extension mappings
+
     for (index, block) in blocks.iter().enumerate() {
         if config.tangled && block.tangle_path.is_none() {
             // Skip blocks without :tangle if --tangled is set
@@ -23,14 +25,14 @@ pub fn write_code_blocks(blocks: &[CodeBlock], config: &Config, source_file: &Pa
         }
 
         if let Some(ref lang) = block.language {
+            // Retrieve the file extension for the given language, default to ".txt" if unknown
+            let extension = extensions.get(lang).map(String::as_str).unwrap_or("txt");
+
             // Determine the file path to use
             let output_path: PathBuf = if let Some(tangle_path) = &block.tangle_path {
                 config.output_dir.join(tangle_path)
             } else {
-                let extensions = config.language_extensions();
-                let txt = "txt".to_string();
-                let extension = extensions.get(lang).unwrap_or(&txt);
-                config.output_dir.join(lang).join(format!("{}.{}", file_stem, extension))
+                config.output_dir.join(format!("{}.{}", file_stem, extension))
             };
 
             if config.dry_run {
@@ -42,6 +44,9 @@ pub fn write_code_blocks(blocks: &[CodeBlock], config: &Config, source_file: &Pa
             } else {
                 if let Some(parent) = output_path.parent() {
                     fs::create_dir_all(parent)?;
+                }
+                if config.verbose {
+                    info!("Creating {:?}", output_path);
                 }
 
                 let mut file = File::create(&output_path)?;
@@ -55,3 +60,4 @@ pub fn write_code_blocks(blocks: &[CodeBlock], config: &Config, source_file: &Pa
 
     Ok(())
 }
+

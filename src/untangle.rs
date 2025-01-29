@@ -1,7 +1,7 @@
 use log::{info, warn};
 use std::fs;
 use std::io::{self, Read, Write};
-use std::path::{Path, PathBuf};
+use std::path::{Path};
 
 /// Convert a source code file into a Markdown file with a code block.
 pub fn untangle_file(input_file: &Path, output_dir: &Path, dry_run: bool) -> io::Result<()> {
@@ -13,7 +13,10 @@ pub fn untangle_file(input_file: &Path, output_dir: &Path, dry_run: bool) -> io:
         .unwrap_or("");
 
     fs::File::open(input_file)?.read_to_string(&mut file_content)?;
-
+    
+    if extension.trim().is_empty() {
+        warn!("File with no extension.")
+    }
     // Determine the language from the file extension
     let language = extension_to_language(extension);
 

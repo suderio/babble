@@ -24,13 +24,11 @@ pub fn extract_code_blocks(file_path: &std::path::Path) -> io::Result<Vec<CodeBl
         match event {
             Event::Start(pulldown_cmark::Tag::CodeBlock(CodeBlockKind::Fenced(info))) => {
                 let parts: Vec<&str> = info.split_whitespace().collect();
-                info!("parts {:?}", parts);
                 let language = parts.get(0).map(|s| s.to_string());
                 let tangle_path = parts
                     .iter()
                     .position(|&s| s == ":tangle")
                     .and_then(|i| Some(parts.get(i + 1)?.to_string()));
-                    info!("tangle_path: {:?}", tangle_path);
                 current_block = Some(CodeBlock {
                     language,
                     content: String::new(),
@@ -42,7 +40,7 @@ pub fn extract_code_blocks(file_path: &std::path::Path) -> io::Result<Vec<CodeBl
                     block.content.push_str(&text);
                 }
             }
-            Event::End(pulldown_cmark::Tag::CodeBlock(_)) => {
+            Event::End(pulldown_cmark::TagEnd::CodeBlock) => {
                 if let Some(block) = current_block.take() {
                     blocks.push(block);
                 }

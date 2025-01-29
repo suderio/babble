@@ -9,3 +9,7 @@ Changed binary name.
 # v0.1.0
 
 First working version.
+
+# v0.1.1
+
+Lib versions upgrade.

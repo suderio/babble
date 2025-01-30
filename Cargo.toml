@@ -1,0 +1,19 @@
+[package]
+name = "markdown_babble"
+version = "0.1.0"
+edition = "2021"
+authors = ["Paulo Suderio <paulo.suderio@gmail.com>"]
+description = "A tool to extract or convert code blocks between Markdown and source code files."
+license = "MIT"
+repository = "https://github.com/suderio/markdown_babble"
+
+[[bin]]
+name = "markdown-babble"
+path = "src/main.rs"
+
+[dependencies]
+clap = { version = "4.5.27", features = ["derive"] }
+pulldown-cmark = "0.12.2"
+glob = "0.3.2"
+log = "0.4.25"
+env_logger = "0.11.6"

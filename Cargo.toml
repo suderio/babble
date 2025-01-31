@@ -1,6 +1,6 @@
 [package]
 name = "markdown_babble"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2021"
 authors = ["Paulo Suderio <paulo.suderio@gmail.com>"]
 description = "A tool to extract or convert code blocks between Markdown and source code files."
